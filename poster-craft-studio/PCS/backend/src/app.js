@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const { clerkMiddleware } = require("@clerk/express");
-const posterRoutes = require("./routes/posterRoutes");
+const posterRoutes = require("./routes/posterroutes");
 const errorHandler = require("./middleware/errorHandler");
 
 const app = express();

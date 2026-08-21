@@ -1,0 +1,534 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@400;500;600&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif; /*[cite: 1, 8] */
+  color: #f0eef7; /*[cite: 1, 8] */
+  background: 
+    linear-gradient(rgba(16, 14, 28, 0.75), rgba(11, 10, 20, 0.85)), 
+    url('./assets/hero.png') center/cover no-repeat fixed; /*[cite: 1, 8] */
+  min-height: 100vh;
+}
+
+h1, h2, .brand-title {
+  font-family: 'Playfair Display', serif; /*[cite: 1, 8] */
+}
+
+/* ---------- Top Navbar ---------- */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 48px;
+  border-bottom: none;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+.logo {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffffff;
+}
+
+.logo::before {
+  content: "◆";
+  color: #ff6b6b;
+  font-size: 16px;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-btn, .logout-btn {
+  background: rgba(255, 255, 255, 0.06);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 9px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.15s ease;
+}
+
+.profile-btn:hover, .logout-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ---------- Hero / main app screen ---------- */
+
+.hero {
+  min-height: 100vh;
+  width: 100%;
+}
+
+.hero-content {
+  max-width: 860px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 60px 24px 60px;
+}
+
+.hero-content h1 {
+  font-size: 58px;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 16px;
+  color: #ffffff;
+}
+
+.hero-subtitle {
+  color: #a3a0bd;
+  font-size: 18px;
+  margin-bottom: 40px;
+}
+
+/* ---------- Prompt bar ---------- */
+
+.prompt-bar {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 24px;
+  padding: 24px;
+  text-align: left;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.prompt-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 18px;
+  outline: none;
+  margin-bottom: 20px;
+  font-family: 'Inter', sans-serif;
+}
+
+.prompt-input::placeholder {
+  color: #6b6890;
+}
+
+.prompt-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* FIX: Dropdown text visibility */
+.prompt-controls select {
+
+  appearance: none; /* Add this line to remove default arrow */
+  -webkit-appearance: none; /* Add this line for Safari support */
+  background: #1a1728;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+}
+
+.prompt-controls select option {
+  background-color: #161426;
+  color: #ffffff;
+}
+
+.file-pill {
+  background: rgba(255, 255, 255, 0.06);
+  color: #e5e3f0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.15s ease;
+}
+
+.file-pill:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.submit-btn {
+  margin-left: auto;
+  background: linear-gradient(135deg, #ff6b6b, #ff9d6b);
+  color: #1a0a0a;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-weight: 700;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(255, 107, 107, 0.35);
+  transition: transform 0.15s ease;
+}
+
+.submit-btn:hover {
+  transform: scale(1.06);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ---------- Feature chips row ---------- */
+
+.feature-row {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.feature-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  font-size: 13px;
+  color: #a3a0bd;
+}
+
+.feature-chip .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #5eead4;
+}
+
+/* ---------- Login & Sign Up Pages ---------- */
+
+.login-page {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card {
+  background: rgba(20, 18, 32, 0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 44px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.brand-title {
+  color: white;
+  font-size: 28px;
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.brand-subtitle {
+  color: #a3a0bd;
+  margin-bottom: 28px;
+  font-size: 14px;
+}
+
+.login-card label {
+  display: block;
+  text-align: left;
+  font-size: 13px;
+  margin-top: 16px;
+  margin-bottom: 6px;
+  color: #a3a0bd;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: white;
+  font-size: 14px;
+  outline: none;
+}
+
+.login-card input:focus {
+  border-color: #ff6b6b;
+}
+
+.login-card button {
+  margin-top: 26px;
+  width: 100%;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ff6b6b, #ff9d6b);
+  color: #1a0a0a;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+}
+
+.login-footer {
+  margin-top: 18px;
+  font-size: 13px;
+  color: #a3a0bd;
+}
+
+.login-footer span {
+  color: #5eead4;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* ---------- Profile Modal ---------- */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal-card {
+  background: #161426;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 32px;
+  border-radius: 20px;
+  width: 380px;
+  color: white;
+}
+
+.modal-card h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+.profile-field {
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.profile-field label {
+  font-size: 12px;
+  color: #a3a0bd;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.profile-field input {
+  width: 100%;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-radius: 8px;
+}
+
+.plan-badge {
+  display: inline-block;
+  background: rgba(94, 234, 212, 0.15);
+  color: #5eead4;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.close-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: transparent;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+/* ---------- Poster result ---------- */
+
+.poster-display {
+  margin-top: 40px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.poster-display img {
+  max-width: 100%;
+  max-height: 65vh;
+  width: auto;
+  border-radius: 20px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  object-fit: contain;
+}
+
+.download-btn {
+  margin-top: 20px;
+  padding: 14px 32px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff6b6b, #ff9d6b);
+  color: #1a0a0a;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+  transition: transform 0.15s ease;
+}
+
+.download-btn:hover {
+  transform: scale(1.03);
+}
+.prompt-controls select {
+  font-size: 13px;
+  padding: 10px 14px;
+}
+.reference-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+}
+
+.reference-preview img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.reference-label {
+  font-size: 13px;
+  color: #a3a0bd;
+}
+
+.remove-ref-btn {
+  margin-left: auto;
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff6b6b;
+  border: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.remove-ref-btn:hover {
+  background: rgba(255, 107, 107, 0.25);
+}
+.optimize-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #a3a0bd;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.optimize-toggle input {
+  accent-color: #ff6b6b;
+  cursor: pointer;
+}
+.row-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.provider-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: #1a1728;
+  background-image: none;
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+}
+
+.ref-warning {
+  color: #ffb86b;
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(26, 10, 10, 0.3);
+  border-top-color: #1a0a0a;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.spinner.large {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #ff6b6b;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.poster-skeleton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 60px 40px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  color: #a3a0bd;
+  font-size: 14px;
+}

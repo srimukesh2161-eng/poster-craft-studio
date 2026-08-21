@@ -3,7 +3,7 @@ require("dns").setDefaultResultOrder("ipv4first");
 
 const { InferenceClient } = require("@huggingface/inference");
 
-const posterCategories = require("../data/posterCategories");
+const posterCategories = require("../data/postercategories");
 const stylePresets = require("../data/stylePresets");
 
 const hf = new InferenceClient(process.env.HUGGINGFACE_API_KEY);

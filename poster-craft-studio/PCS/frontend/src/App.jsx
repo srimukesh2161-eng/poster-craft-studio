@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { SignedIn, SignedOut, UserButton, useAuth } from "@clerk/clerk-react";
-import Login from "./components/Login";
+import Login from "./components/login";
 import PosterForm from "./components/Posterform";
-import PosterDisplay from "./components/Posterdisplay";
+import PosterDisplay from "./components/PosterDisplay";
 import "./App.css";
 
 function App() {

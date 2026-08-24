@@ -64,7 +64,9 @@ async function generateWithHuggingFace(theme, category, mood) {
 async function generateWithNvidiaQwen(theme, category, mood, referenceFile) {
   const prompt = buildPrompt(theme, category, mood);
   if (!process.env.NVIDIA_API_KEY) {
-    throw new Error("NVIDIA_API_KEY is missing from environment variables.");
+    const error = new Error("NVIDIA_API_KEY is missing from environment variables.");
+    error.statusCode = 503;
+    throw error;
   }
 
   const body = { prompt, mode: "base", width: 1024, height: 1024, cfg_scale: 5, steps: 25, samples: 1 };
@@ -103,7 +105,9 @@ async function generateWithNvidiaQwen(theme, category, mood, referenceFile) {
 
   if (!response.ok) {
     const errText = await response.text();
-    throw new Error(`NVIDIA API Error (${response.status}): ${errText}`);
+    const error = new Error(`NVIDIA API Error (${response.status}): ${errText}`);
+    error.statusCode = 502;
+    throw error;
   }
 
   const data = await response.json();

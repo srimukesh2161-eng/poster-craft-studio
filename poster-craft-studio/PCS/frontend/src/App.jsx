@@ -30,8 +30,11 @@ function App() {
       body: formData,
     });
 
-    if (!response.ok) throw new Error(`Server error: ${response.statusText}`);
-    const data = await response.json();
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(data.error || `Server error (${response.status})`);
+    }
 
     if (data.error) alert("Error: " + data.error);
     else setImageUrl(data.image);

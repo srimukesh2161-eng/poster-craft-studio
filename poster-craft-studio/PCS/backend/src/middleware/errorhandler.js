@@ -3,7 +3,7 @@ function errorHandler(err, req, res, next) {
   if (req.headers.origin === "https://poster-craft-studio-fe.onrender.com") {
     res.setHeader("Access-Control-Allow-Origin", req.headers.origin);
   }
-  res.status(500).json({ error: err.message || "Internal server error" });
+  res.status(err.statusCode || 500).json({ error: err.message || "Internal server error" });
 }
 
 module.exports = errorHandler;

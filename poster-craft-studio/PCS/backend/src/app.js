@@ -13,6 +13,10 @@ app.use(express.urlencoded({ extended: true }));
 // Parses the Clerk auth token on incoming requests
 app.use(clerkMiddleware());
 
+app.get("/", (req, res) => {
+	res.json({ status: "ok", service: "poster-craft-studio-api" });
+});
+
 app.use("/api", posterRoutes);
 
 app.use(errorHandler);

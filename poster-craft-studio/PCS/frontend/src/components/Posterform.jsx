@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import API_BASE_URL from "../config/api";
 
 const categories = [
   "Music/Concert", "Birthday/Celebration", "Corporate/Business Event",
@@ -22,7 +23,7 @@ function PosterForm({ onGenerate, loading }) {
   const [provider, setProvider] = useState("qwen-nvidia");
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/providers")
+    fetch(`${API_BASE_URL}/api/providers`)
       .then((res) => res.json())
       .then((data) => setProviders(data.providers || []))
       .catch(() => setProviders([]));

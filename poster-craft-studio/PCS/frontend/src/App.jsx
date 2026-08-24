@@ -3,6 +3,7 @@ import { SignedIn, SignedOut, UserButton, useAuth } from "@clerk/clerk-react";
 import Login from "./components/login";
 import PosterForm from "./components/Posterform";
 import PosterDisplay from "./components/PosterDisplay";
+import API_BASE_URL from "./config/api";
 import "./App.css";
 
 function App() {
@@ -23,7 +24,7 @@ function App() {
     formData.append("provider", provider);
     if (referenceImage) formData.append("referenceImage", referenceImage);
 
-    const response = await fetch("https://poster-craft-studio.onrender.com", {
+    const response = await fetch(`${API_BASE_URL}/api/generate`, {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,

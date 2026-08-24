@@ -6,7 +6,24 @@ const errorHandler = require("./middleware/errorhandler");
 
 const app = express();
 
-app.use(cors());
+const allowedOrigins = [
+	"http://localhost:5173",
+	"http://localhost:4173",
+	"https://poster-craft-studio-fe.onrender.com",
+];
+
+if (process.env.FRONTEND_URL) {
+	allowedOrigins.push(process.env.FRONTEND_URL.replace(/\/$/, ""));
+}
+
+app.use(cors({
+	origin: (origin, callback) => {
+		if (!origin || allowedOrigins.includes(origin)) {
+			return callback(null, true);
+		}
+		return callback(new Error("Origin is not allowed by CORS"));
+	},
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

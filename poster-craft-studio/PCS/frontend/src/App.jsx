@@ -23,7 +23,7 @@ function App() {
     formData.append("provider", provider);
     if (referenceImage) formData.append("referenceImage", referenceImage);
 
-    const response = await fetch("http://localhost:8000/api/generate", {
+    const response = await fetch("https://poster-craft-studio.onrender.com", {
       method: "POST",
       headers: { Authorization: `Bearer ${token}` },
       body: formData,

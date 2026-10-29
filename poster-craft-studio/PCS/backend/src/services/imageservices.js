@@ -72,18 +72,26 @@ async function generateWithNvidia(theme, category, mood, referenceFile) {
     throw error;
   }
 
-  const modelName = process.env.NVIDIA_MODEL || "black-forest-labs/flux.1-dev";
-  const endpoint = process.env.NVIDIA_IMAGE_ENDPOINT || `https://ai.api.nvidia.com/v1/genai/${modelName}`;
+  const modelName = DEFAULT_NVIDIA_MODEL;
+  const endpoint = NVIDIA_IMAGE_ENDPOINT;
 
   console.log(`Calling NVIDIA model: ${modelName}`);
   console.log(`Using NVIDIA endpoint: ${endpoint}`);
 
-  const body = { prompt, mode: "base", width: 1024, height: 1024, cfg_scale: 5, steps: 25, samples: 1 };
+  const body = {
+    prompt,
+    mode: "base",
+    image: "",
+    cfg_scale: 5,
+    width: 1024,
+    height: 1024,
+    seed: Math.floor(Math.random() * 2 ** 32),
+    steps: 25,
+  };
 
   if (referenceFile) {
     body.mode = "image-to-image";
     body.image = referenceFile.buffer.toString("base64");
-    body.strength = 0.6;
   }
 
   let response = await fetch(endpoint, {
@@ -98,9 +106,7 @@ async function generateWithNvidia(theme, category, mood, referenceFile) {
 
   if (!response.ok && referenceFile) {
     console.warn("Image-to-image mode failed, retrying as text-only...");
-    const fallbackBody = { ...body, mode: "base" };
-    delete fallbackBody.image;
-    delete fallbackBody.strength;
+    const fallbackBody = { ...body, mode: "base", image: "" };
     response = await fetch(endpoint, {
       method: "POST",
       headers: {

@@ -20,7 +20,7 @@ function PosterForm({ onGenerate, loading }) {
   const [previewUrl, setPreviewUrl] = useState(null);
   const [optimize, setOptimize] = useState(false);
   const [providers, setProviders] = useState([]);
-  const [provider, setProvider] = useState("qwen-nvidia");
+  const [provider, setProvider] = useState("nvidia");
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/providers`)

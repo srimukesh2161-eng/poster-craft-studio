@@ -15,7 +15,7 @@ async function handleGenerate(req, res, next) {
     }
 
     const useOptimization = optimize === "true" || optimize === true;
-    const chosenProvider = provider || "qwen-nvidia";
+    const chosenProvider = provider || "nvidia";
 
     const image = await generatePoster(theme, category, mood, req.file, useOptimization, chosenProvider);
     res.json({ image });

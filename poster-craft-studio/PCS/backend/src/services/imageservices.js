@@ -12,7 +12,7 @@ const DEFAULT_NVIDIA_MODEL = process.env.NVIDIA_MODEL || "black-forest-labs/flux
 const NVIDIA_IMAGE_ENDPOINT = process.env.NVIDIA_IMAGE_ENDPOINT || `https://ai.api.nvidia.com/v1/genai/${DEFAULT_NVIDIA_MODEL}`;
 
 const AVAILABLE_PROVIDERS = {
-  "qwen-nvidia": { label: `NVIDIA Image Model (${DEFAULT_NVIDIA_MODEL})`, supportsReference: true },
+  "nvidia": { label: `NVIDIA (${DEFAULT_NVIDIA_MODEL})`, supportsReference: true },
   "huggingface": { label: "FLUX (Hugging Face)", supportsReference: false },
   "pollinations": { label: "Pollinations (Free)", supportsReference: false },
   "gemini": { label: "Gemini", supportsReference: true },
@@ -64,7 +64,7 @@ async function generateWithHuggingFace(theme, category, mood) {
   return `data:image/jpeg;base64,${Buffer.from(arrayBuffer).toString("base64")}`;
 }
 
-async function generateWithNvidiaQwen(theme, category, mood, referenceFile) {
+async function generateWithNvidia(theme, category, mood, referenceFile) {
   const prompt = buildPrompt(theme, category, mood);
   if (!process.env.NVIDIA_API_KEY) {
     const error = new Error("NVIDIA_API_KEY is missing from environment variables.");
@@ -131,8 +131,8 @@ async function generateWithGemini(theme, category, mood, referenceFile) {
 
 async function executeProvider(theme, category, mood, referenceFile, selectedProvider) {
   switch (selectedProvider) {
-    case "qwen-nvidia":
-      return await generateWithNvidiaQwen(theme, category, mood, referenceFile);
+    case "nvidia":
+      return await generateWithNvidia(theme, category, mood, referenceFile);
     case "huggingface":
       return await generateWithHuggingFace(theme, category, mood);
     case "pollinations":
@@ -144,45 +144,15 @@ async function executeProvider(theme, category, mood, referenceFile, selectedPro
   }
 }
 
-function getProviderFallbackOrder(provider) {
-  if (provider === "qwen-nvidia") {
-    return ["qwen-nvidia"];
-  }
-
-  const order = [provider];
-  const extras = ["qwen-nvidia", "pollinations", "huggingface", "gemini"];
-
-  for (const candidate of extras) {
-    if (candidate !== provider && !order.includes(candidate)) {
-      order.push(candidate);
-    }
-  }
-
-  return order;
-}
-
-async function generatePosterImage(theme, category, mood, referenceFile, useOptimization = false, provider = "qwen-nvidia") {
-  if (!AVAILABLE_PROVIDERS[provider]) {
-    throw new Error(`Unsupported provider: ${provider}`);
+async function generatePosterImage(theme, category, mood, referenceFile, useOptimization = false, provider = "nvidia") {
+  const selectedProvider = provider === "qwen-nvidia" ? "nvidia" : provider;
+  if (!AVAILABLE_PROVIDERS[selectedProvider]) {
+    throw new Error(`Unsupported provider: ${selectedProvider}`);
   }
 
   const finalTheme = useOptimization ? await optimizePromptWithHuggingFace(theme) : theme;
-  const attempts = getProviderFallbackOrder(provider);
-  let lastError = null;
-
-  for (const selectedProvider of attempts) {
-    try {
-      console.log(`Provider attempt: ${selectedProvider} | Optimized: ${useOptimization}`);
-      return await executeProvider(finalTheme, category, mood, referenceFile, selectedProvider);
-    } catch (err) {
-      lastError = err;
-      console.warn(`Provider ${selectedProvider} failed:`, err.message);
-    }
-  }
-
-  const fallbackError = new Error(lastError ? lastError.message : "Image generation failed for all providers.");
-  fallbackError.statusCode = lastError && lastError.statusCode ? lastError.statusCode : 502;
-  throw fallbackError;
+  console.log(`Provider selected: ${selectedProvider} | Optimized: ${useOptimization}`);
+  return executeProvider(finalTheme, category, mood, referenceFile, selectedProvider);
 }
 
 module.exports = {

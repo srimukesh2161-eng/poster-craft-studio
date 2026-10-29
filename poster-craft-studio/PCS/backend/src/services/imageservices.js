@@ -81,7 +81,6 @@ async function generateWithNvidia(theme, category, mood, referenceFile) {
   const body = {
     prompt,
     mode: "base",
-    image: "",
     cfg_scale: 5,
     width: 1024,
     height: 1024,
@@ -106,7 +105,8 @@ async function generateWithNvidia(theme, category, mood, referenceFile) {
 
   if (!response.ok && referenceFile) {
     console.warn("Image-to-image mode failed, retrying as text-only...");
-    const fallbackBody = { ...body, mode: "base", image: "" };
+    const fallbackBody = { ...body, mode: "base" };
+    delete fallbackBody.image;
     response = await fetch(endpoint, {
       method: "POST",
       headers: {

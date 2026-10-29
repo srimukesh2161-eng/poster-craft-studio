@@ -8,7 +8,7 @@ const stylePresets = require("../data/stylepresets");
 
 const hf = new InferenceClient(process.env.HUGGINGFACE_API_KEY);
 
-const DEFAULT_NVIDIA_MODEL = process.env.NVIDIA_MODEL || process.env.NVIDIA_QWEN_MODEL || "qwen/qwen-image";
+const DEFAULT_NVIDIA_MODEL = process.env.NVIDIA_MODEL || "black-forest-labs/flux.1-dev";
 const NVIDIA_IMAGE_ENDPOINT = process.env.NVIDIA_IMAGE_ENDPOINT || `https://ai.api.nvidia.com/v1/genai/${DEFAULT_NVIDIA_MODEL}`;
 
 const AVAILABLE_PROVIDERS = {
@@ -72,7 +72,7 @@ async function generateWithNvidiaQwen(theme, category, mood, referenceFile) {
     throw error;
   }
 
-  const modelName = process.env.NVIDIA_MODEL || process.env.NVIDIA_QWEN_MODEL || "qwen/qwen-image";
+  const modelName = process.env.NVIDIA_MODEL || "black-forest-labs/flux.1-dev";
   const endpoint = process.env.NVIDIA_IMAGE_ENDPOINT || `https://ai.api.nvidia.com/v1/genai/${modelName}`;
 
   console.log(`Calling NVIDIA model: ${modelName}`);

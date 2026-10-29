@@ -8,7 +8,8 @@ const stylePresets = require("../data/stylepresets");
 
 const hf = new InferenceClient(process.env.HUGGINGFACE_API_KEY);
 
-const DEFAULT_NVIDIA_MODEL = process.env.NVIDIA_MODEL || "qwen/qwen-image";
+const DEFAULT_NVIDIA_MODEL = process.env.NVIDIA_MODEL || process.env.NVIDIA_QWEN_MODEL || "qwen/qwen-image";
+const NVIDIA_IMAGE_ENDPOINT = process.env.NVIDIA_IMAGE_ENDPOINT || `https://ai.api.nvidia.com/v1/genai/${DEFAULT_NVIDIA_MODEL}`;
 
 const AVAILABLE_PROVIDERS = {
   "qwen-nvidia": { label: `NVIDIA Image Model (${DEFAULT_NVIDIA_MODEL})`, supportsReference: true },
@@ -71,10 +72,11 @@ async function generateWithNvidiaQwen(theme, category, mood, referenceFile) {
     throw error;
   }
 
-  const modelName = process.env.NVIDIA_MODEL || "qwen/qwen-image";
-  const endpoint = `https://ai.api.nvidia.com/v1/genai/${modelName}`;
+  const modelName = process.env.NVIDIA_MODEL || process.env.NVIDIA_QWEN_MODEL || "qwen/qwen-image";
+  const endpoint = process.env.NVIDIA_IMAGE_ENDPOINT || `https://ai.api.nvidia.com/v1/genai/${modelName}`;
 
   console.log(`Calling NVIDIA model: ${modelName}`);
+  console.log(`Using NVIDIA endpoint: ${endpoint}`);
 
   const body = { prompt, mode: "base", width: 1024, height: 1024, cfg_scale: 5, steps: 25, samples: 1 };
 
@@ -143,6 +145,10 @@ async function executeProvider(theme, category, mood, referenceFile, selectedPro
 }
 
 function getProviderFallbackOrder(provider) {
+  if (provider === "qwen-nvidia") {
+    return ["qwen-nvidia"];
+  }
+
   const order = [provider];
   const extras = ["qwen-nvidia", "pollinations", "huggingface", "gemini"];
 

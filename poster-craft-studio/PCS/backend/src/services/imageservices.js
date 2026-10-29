@@ -8,8 +8,10 @@ const stylePresets = require("../data/stylepresets");
 
 const hf = new InferenceClient(process.env.HUGGINGFACE_API_KEY);
 
+const DEFAULT_NVIDIA_MODEL = process.env.NVIDIA_MODEL || "qwen/qwen-image";
+
 const AVAILABLE_PROVIDERS = {
-  "qwen-nvidia": { label: "Qwen (NVIDIA)", supportsReference: true },
+  "qwen-nvidia": { label: `NVIDIA Image Model (${DEFAULT_NVIDIA_MODEL})`, supportsReference: true },
   "huggingface": { label: "FLUX (Hugging Face)", supportsReference: false },
   "pollinations": { label: "Pollinations (Free)", supportsReference: false },
   "gemini": { label: "Gemini", supportsReference: true },
@@ -69,6 +71,11 @@ async function generateWithNvidiaQwen(theme, category, mood, referenceFile) {
     throw error;
   }
 
+  const modelName = process.env.NVIDIA_MODEL || "qwen/qwen-image";
+  const endpoint = `https://ai.api.nvidia.com/v1/genai/${modelName}`;
+
+  console.log(`Calling NVIDIA model: ${modelName}`);
+
   const body = { prompt, mode: "base", width: 1024, height: 1024, cfg_scale: 5, steps: 25, samples: 1 };
 
   if (referenceFile) {
@@ -77,7 +84,7 @@ async function generateWithNvidiaQwen(theme, category, mood, referenceFile) {
     body.strength = 0.6;
   }
 
-  let response = await fetch("https://ai.api.nvidia.com/v1/genai/black-forest-labs/flux.1-dev", {
+  let response = await fetch(endpoint, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${process.env.NVIDIA_API_KEY}`,
@@ -92,7 +99,7 @@ async function generateWithNvidiaQwen(theme, category, mood, referenceFile) {
     const fallbackBody = { ...body, mode: "base" };
     delete fallbackBody.image;
     delete fallbackBody.strength;
-    response = await fetch("https://ai.api.nvidia.com/v1/genai/black-forest-labs/flux.1-dev", {
+    response = await fetch(endpoint, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.NVIDIA_API_KEY}`,
@@ -105,7 +112,7 @@ async function generateWithNvidiaQwen(theme, category, mood, referenceFile) {
 
   if (!response.ok) {
     const errText = await response.text();
-    const error = new Error(`NVIDIA API Error (${response.status}): ${errText}`);
+    const error = new Error(`NVIDIA API Error (${response.status}) for model ${modelName}: ${errText}`);
     error.statusCode = 502;
     throw error;
   }
@@ -120,25 +127,56 @@ async function generateWithGemini(theme, category, mood, referenceFile) {
   throw new Error("Gemini provider not configured yet.");
 }
 
+async function executeProvider(theme, category, mood, referenceFile, selectedProvider) {
+  switch (selectedProvider) {
+    case "qwen-nvidia":
+      return await generateWithNvidiaQwen(theme, category, mood, referenceFile);
+    case "huggingface":
+      return await generateWithHuggingFace(theme, category, mood);
+    case "pollinations":
+      return await generateWithPollinations(theme, category, mood);
+    case "gemini":
+      return await generateWithGemini(theme, category, mood, referenceFile);
+    default:
+      throw new Error(`Unsupported provider: ${selectedProvider}`);
+  }
+}
+
+function getProviderFallbackOrder(provider) {
+  const order = [provider];
+  const extras = ["qwen-nvidia", "pollinations", "huggingface", "gemini"];
+
+  for (const candidate of extras) {
+    if (candidate !== provider && !order.includes(candidate)) {
+      order.push(candidate);
+    }
+  }
+
+  return order;
+}
+
 async function generatePosterImage(theme, category, mood, referenceFile, useOptimization = false, provider = "qwen-nvidia") {
   if (!AVAILABLE_PROVIDERS[provider]) {
     throw new Error(`Unsupported provider: ${provider}`);
   }
 
   const finalTheme = useOptimization ? await optimizePromptWithHuggingFace(theme) : theme;
+  const attempts = getProviderFallbackOrder(provider);
+  let lastError = null;
 
-  console.log(`Provider: ${provider} | Optimized: ${useOptimization}`);
-
-  switch (provider) {
-    case "qwen-nvidia":
-      return await generateWithNvidiaQwen(finalTheme, category, mood, referenceFile);
-    case "huggingface":
-      return await generateWithHuggingFace(finalTheme, category, mood);
-    case "pollinations":
-      return await generateWithPollinations(finalTheme, category, mood);
-    case "gemini":
-      return await generateWithGemini(finalTheme, category, mood, referenceFile);
+  for (const selectedProvider of attempts) {
+    try {
+      console.log(`Provider attempt: ${selectedProvider} | Optimized: ${useOptimization}`);
+      return await executeProvider(finalTheme, category, mood, referenceFile, selectedProvider);
+    } catch (err) {
+      lastError = err;
+      console.warn(`Provider ${selectedProvider} failed:`, err.message);
+    }
   }
+
+  const fallbackError = new Error(lastError ? lastError.message : "Image generation failed for all providers.");
+  fallbackError.statusCode = lastError && lastError.statusCode ? lastError.statusCode : 502;
+  throw fallbackError;
 }
 
 module.exports = {
